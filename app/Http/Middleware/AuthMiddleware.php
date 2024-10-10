@@ -23,7 +23,7 @@ class AuthMiddleware
             $token = $request->bearerToken();
     
             if (!$token) {
-                return response()->json(['error' => 'Authorization token not found 123'], 401);
+                return response()->json(['error' => 'Authorization token not found'], 401);
             }
     
             $decodedToken = JWTAuth::setToken($token)->getPayload();  

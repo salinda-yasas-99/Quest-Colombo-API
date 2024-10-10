@@ -9,11 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 class PackageController extends Controller
 {
-     /**
-     * Get all packages
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    
     public function index()
     {
 
@@ -61,12 +57,7 @@ class PackageController extends Controller
         }
     }
 
-    /**
-     * Create a new package
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+   
     public function store(Request $request)
     {
         // Validate the incoming request data
