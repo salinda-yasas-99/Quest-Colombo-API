@@ -13,7 +13,14 @@ Route::post('api/register', [AuthController::class, 'register']);
 Route::post('api/login', [AuthController::class, 'login']);
 
 
-
 // get all users
-Route::get('api/user', [UserController::class, 'getUsers'])
-    ->middleware(AuthMiddleware::class); // Apply the custom middleware
+Route::get('api/user', [UserController::class, 'getUsers']);
+    //->middleware(AuthMiddleware::class); // Apply the custom middleware
+
+// Get a single user by ID
+Route::get('api/user/{id}', [UserController::class, 'getUserById']);
+    //->middleware(AuthMiddleware::class);
+    
+// Delete a user by ID
+Route::delete('api/user/{id}', [UserController::class, 'deleteUser']);
+    //->middleware(AuthMiddleware::class); 
