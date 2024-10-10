@@ -6,7 +6,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\UserAuthMiddelware;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\WorkSpaceController;
 use App\Http\Controllers\WorkSpaceTypeController;
+use App\Models\WorkSpace;
 use App\Models\WorkspaceType;
 
 // Registration route
@@ -29,6 +31,7 @@ Route::delete('api/user/{id}', [UserController::class, 'deleteUser']);
 
 
 // Routes for Packages
+
 Route::get('api/packages', [PackageController::class, 'index']);
     //->middleware(UserAuthMiddelware::class); // Get all packages
 
@@ -46,6 +49,7 @@ Route::delete('api/packages/{id}', [PackageController::class, 'destroy']);
 
 
 //work space Types routes
+
 Route::get('api/workSpaceTypes', [WorkSpaceTypeController::class, 'getAllWorkspaceTypes']);
     //->middleware(UserAuthMiddelware::class); // Get all Types
 
@@ -56,6 +60,23 @@ Route::post('api/workSpaceTypes', [WorkSpaceTypeController::class, 'createWorksp
 
 Route::delete('api/workSpaceTypes/{id}', [WorkSpaceTypeController::class, 'deleteTypeById']);
     //->middleware(UserAuthMiddelware::class); //delete type by id
+
+
+
+//work space routes
+
+Route::get('api/workSpaces', [WorkSpaceController::class, 'getAllWorkSpaces']);
+    //->middleware(UserAuthMiddelware::class); // Get all workspaces
+
+Route::get('api/workSpaces', [WorkSpaceController::class, 'getAllWorkSpacesByType']);
+    //->middleware(UserAuthMiddelware::class); // Get all workspaces by type
+
+
+Route::post('api/workSpaces', [WorkSpaceController::class, 'AddNewWorkSpace']);
+    //->middleware(UserAuthMiddelware::class); //add new workspace type
+
+Route::delete('api/workSpaces/{id}', [WorkSpaceController::class, 'deleteWorkSpaceById']);
+    //->middleware(UserAuthMiddelware::class); //delete workspace
 
 
 

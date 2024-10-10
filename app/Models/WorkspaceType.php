@@ -18,4 +18,10 @@ class WorkspaceType extends Model
         'type_name'
     
     ];
+
+     // Define the relationship (one workspace type has many workspaces)
+     public function workspaces()
+     {
+         return $this->hasMany(WorkSpace::class, 'workspace_type_id');
+     }
 }
