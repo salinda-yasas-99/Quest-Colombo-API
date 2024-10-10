@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('packages', function (Blueprint $table) {
             $table->id();
             $table->string('package_name');
-            $table->text('details');
+            $table->json('details');  // Store details as JSON
             $table->decimal('price', 8, 2); // Price with 2 decimal points
             $table->timestamps();
         });

@@ -72,7 +72,7 @@ class PackageController extends Controller
         // Validate the incoming request data
         $validator = Validator::make($request->all(), [
             'package_name' => 'required|string|max:255',
-            'details' => 'required|string',
+            'details' => 'required|array',
             'price' => 'required|numeric|min:0',
         ]);
 
@@ -117,7 +117,7 @@ class PackageController extends Controller
         // Validate the incoming request data
         $validator = Validator::make($request->all(), [
             'package_name' => 'sometimes|required|string|max:255',
-            'details' => 'sometimes|required|string',
+            'details' => 'required|array',
             'price' => 'sometimes|required|numeric|min:0',
         ]);
 
