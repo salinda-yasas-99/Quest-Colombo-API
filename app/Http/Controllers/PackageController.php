@@ -32,12 +32,12 @@ class PackageController extends Controller
         }
     }
 
-    // /**
-    //  * Get a specific package by ID
-    //  *
-    //  * @param int $id
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
+    /**
+     * Get a specific package by ID
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show($id)
     {
         try {
@@ -61,12 +61,12 @@ class PackageController extends Controller
         }
     }
 
-    // /**
-    //  * Create a new package
-    //  *
-    //  * @param \Illuminate\Http\Request $request
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
+    /**
+     * Create a new package
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(Request $request)
     {
         // Validate the incoming request data
@@ -105,13 +105,13 @@ class PackageController extends Controller
         }
     }
 
-    // /**
-    //  * Update a package by ID
-    //  *
-    //  * @param \Illuminate\Http\Request $request
-    //  * @param int $id
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
+    /**
+     * Update a package by ID
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(Request $request, $id)
     {
         // Validate the incoming request data

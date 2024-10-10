@@ -27,10 +27,19 @@ Route::delete('api/user/{id}', [UserController::class, 'deleteUser']);
 
 
 // Routes for Packages
-Route::get('api/packages', [PackageController::class, 'index'])->middleware(AuthMiddleware::class); // Get all packages
-Route::get('api/packages/{id}', [PackageController::class, 'show']); // Get package by ID
-Route::post('api/packages/', [PackageController::class, 'store']); // Create a new package
-Route::put('api/packages/{id}', [PackageController::class, 'update']); // Update a package by ID
-Route::delete('api/packages/{id}', [PackageController::class, 'destroy']); // Delete a package by ID
+Route::get('api/packages', [PackageController::class, 'index'])
+    ->middleware(UserAuthMiddelware::class); // Get all packages
+
+Route::get('api/packages/{id}', [PackageController::class, 'show'])
+    ->middleware(UserAuthMiddelware::class); // Get package by ID
+
+Route::post('api/packages/', [PackageController::class, 'store'])
+    ->middleware(UserAuthMiddelware::class); // Create a new package
+
+Route::put('api/packages/{id}', [PackageController::class, 'update'])
+    ->middleware(UserAuthMiddelware::class); // Update a package by ID
+    
+Route::delete('api/packages/{id}', [PackageController::class, 'destroy'])
+    ->middleware(UserAuthMiddelware::class); // Delete a package by ID
 
 
