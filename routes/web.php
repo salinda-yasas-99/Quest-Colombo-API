@@ -14,8 +14,8 @@ Route::post('api/login', [AuthController::class, 'login']);
 
 
 // get all users
-Route::get('api/user', [UserController::class, 'getUsers']);
-    //->middleware(AuthMiddleware::class); // Apply the custom middleware
+Route::get('api/user', [UserController::class, 'getUsers'])
+    ->middleware(UserAuthMiddelware::class); // Apply the custom middleware
 
 // Get a single user by ID
 Route::get('api/user/{id}', [UserController::class, 'getUserById']);
