@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\WorkSpace;
+use App\Models\WorkspaceType;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -54,6 +55,63 @@ class WorkSpaceController extends Controller
             ], 500);
         }
     }
+
+    public function getWorkspacesByTypeAndDate(Request $request): JsonResponse
+{
+    try {
+        // Retrieve query parameters for workspace type and date
+        $workspaceTypeName = $request->query('workspace_type');
+        $date = $request->query('date'); // Assuming the date is in yyyy-mm-dd format
+
+
+        // Get workspace type ID based on the name
+        $workspaceType = WorkspaceType::where('type_name', $workspaceTypeName)->first();
+
+        if (!$workspaceType) {
+            return response()->json([
+                'error' => 'Invalid workspace_type provided'
+            ], 404);
+        }
+
+        // Retrieve workspaces of the given type and slots based on the date
+        $workspaces = WorkSpace::with(['workspaceType', 'workspaceSlots' => function ($query) use ($date) {
+            $query->where('date', $date);
+        }])
+        ->where('workspace_type_id', $workspaceType->id)
+        ->get();
+
+        // Format the response
+        $formattedWorkspaces = $workspaces->map(function ($workspace) {
+            return [
+                'id' => $workspace->id,
+                'name' => $workspace->name,
+                'description' => $workspace->description,
+                'location' => $workspace->location,
+                'fee' => $workspace->fee,
+                'imageUrl' => $workspace->imageUrl,
+                'workspace_type_id' => $workspace->workspace_type_id,
+                'workspace_type' => [
+                    'id' => $workspace->workspaceType->id,
+                    'type_name' => $workspace->workspaceType->type_name,
+                ],
+                // Assuming that workspace has one slot on a specific date
+                'slot_1' => $workspace->workspaceSlots->isNotEmpty() ? $workspace->workspaceSlots->first()->slot_1 : 'available',
+                'slot_2' => $workspace->workspaceSlots->isNotEmpty() ? $workspace->workspaceSlots->first()->slot_2 : 'available',
+                'slot_3' => $workspace->workspaceSlots->isNotEmpty() ? $workspace->workspaceSlots->first()->slot_3 : 'available',
+            ];
+        });
+
+        // Return the formatted response
+        return response()->json($formattedWorkspaces, 200);
+
+    } catch (Exception $e) {
+        // If something goes wrong, return an error message with a 500 status code
+        return response()->json([
+            'error' => 'Failed to retrieve workspaces',
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
 
  
      // POST: Create a new workspace

@@ -2,11 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\UserAuthMiddelware;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\WorkSpaceController;
+use App\Http\Controllers\WorkSpaceSlotController;
 use App\Http\Controllers\WorkSpaceTypeController;
 use App\Models\WorkSpace;
 use App\Models\WorkspaceType;
@@ -19,7 +21,8 @@ Route::post('api/login', [AuthController::class, 'login']);
 
 
 // get all users
-Route::get('api/user', [UserController::class, 'getUsers']) -> middleware(AuthMiddleware::class); // Apply the custom middleware
+Route::get('api/user', [UserController::class, 'getUsers']);
+    //-> middleware(AuthMiddleware::class); // Apply the custom middleware
 
 // Get a single user by ID
 Route::get('api/user/{id}', [UserController::class, 'getUserById']);
@@ -72,6 +75,10 @@ Route::get('api/workSpaces', [WorkSpaceController::class, 'getAllWorkSpacesByTyp
     //->middleware(UserAuthMiddelware::class); // Get all workspaces by type
 
 
+Route::get('api/workSpacesByDate', [WorkSpaceController::class, 'getWorkspacesByTypeAndDate']);
+    //->middleware(UserAuthMiddelware::class); // Get all workspaces
+
+
 Route::post('api/workSpaces', [WorkSpaceController::class, 'AddNewWorkSpace']);
     //->middleware(UserAuthMiddelware::class); //add new workspace type
 
@@ -79,4 +86,25 @@ Route::delete('api/workSpaces/{id}', [WorkSpaceController::class, 'deleteWorkSpa
     //->middleware(UserAuthMiddelware::class); //delete workspace
 
 
+//work space slot routes
 
+Route::post('api/workSpacesSlots', [WorkSpaceSlotController::class, 'AddNewWorkSpaceSlot']);
+    //->middleware(UserAuthMiddelware::class); //add new workspace type
+
+
+
+
+
+//booking routes
+
+Route::post('api/bookings', [BookingController::class, 'createBooking']);
+    //->middleware(UserAuthMiddelware::class); //add booking
+
+Route::get('api/bookings/user/{userId}', [BookingController::class, 'getBookingsByUserId']);
+    //->middleware(UserAuthMiddelware::class); //get bookings by user id
+
+Route::get('api/bookings/payment', [BookingController::class, 'getBookingsByPaymentStatus']);
+    //->middleware(UserAuthMiddelware::class); //get booking by payment atatus
+
+Route::put('api/bookings/updatePayment/{bookingId}', [BookingController::class, 'updatePaymentStatus']);
+    //->middleware(UserAuthMiddelware::class); //update booking payment status to paid
