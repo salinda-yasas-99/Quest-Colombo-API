@@ -63,12 +63,6 @@ class WorkSpaceController extends Controller
         $workspaceTypeName = $request->query('workspace_type');
         $date = $request->query('date'); // Assuming the date is in yyyy-mm-dd format
 
-        // Validate the required parameters
-        // if (!$workspaceTypeName || !$date) {
-        //     return response()->json([
-        //         'error' => 'workspace_type and date query parameters are required'
-        //     ], 400);
-        // }
 
         // Get workspace type ID based on the name
         $workspaceType = WorkspaceType::where('type_name', $workspaceTypeName)->first();

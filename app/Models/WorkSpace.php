@@ -33,4 +33,9 @@ class WorkSpace extends Model
      {
          return $this->hasMany(WorkSpaceSlot::class, 'workspace_id');
      }
+
+     public function bookings()
+     {
+         return $this->hasMany(Booking::class, 'workspace_id');
+     }
 }

@@ -14,4 +14,10 @@ class Package extends Model
     protected $casts = [
         'details' => 'array',
     ];
+
+     // Define one-to-one inverse relationship with Booking
+     public function booking()
+     {
+         return $this->hasOne(Booking::class, 'package_id');
+     }
 }
