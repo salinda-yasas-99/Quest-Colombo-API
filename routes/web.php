@@ -7,6 +7,7 @@ use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\UserAuthMiddelware;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\WorkSpaceController;
+use App\Http\Controllers\WorkSpaceSlotController;
 use App\Http\Controllers\WorkSpaceTypeController;
 use App\Models\WorkSpace;
 use App\Models\WorkspaceType;
@@ -72,6 +73,10 @@ Route::get('api/workSpaces', [WorkSpaceController::class, 'getAllWorkSpacesByTyp
     //->middleware(UserAuthMiddelware::class); // Get all workspaces by type
 
 
+Route::get('api/workSpacesByDate', [WorkSpaceController::class, 'getWorkspacesByTypeAndDate']);
+    //->middleware(UserAuthMiddelware::class); // Get all workspaces
+
+
 Route::post('api/workSpaces', [WorkSpaceController::class, 'AddNewWorkSpace']);
     //->middleware(UserAuthMiddelware::class); //add new workspace type
 
@@ -79,4 +84,8 @@ Route::delete('api/workSpaces/{id}', [WorkSpaceController::class, 'deleteWorkSpa
     //->middleware(UserAuthMiddelware::class); //delete workspace
 
 
+//work space slot routes
+
+Route::post('api/workSpacesSlots', [WorkSpaceSlotController::class, 'AddNewWorkSpaceSlot']);
+    //->middleware(UserAuthMiddelware::class); //add new workspace type
 
