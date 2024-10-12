@@ -19,6 +19,15 @@ Route::post('api/register', [AuthController::class, 'register']);
 // Login route
 Route::post('api/login', [AuthController::class, 'login']);
 
+//send email
+Route::post('api/send-email', [AuthController::class, 'sendEmail']);
+
+//send email
+Route::post('api/otp', [AuthController::class, 'sendOtp']);
+
+//send email
+Route::post('api/reset-password', [AuthController::class, 'resetPassword']);
+
 
 // get all users
 Route::get('api/user', [UserController::class, 'getUsers']);
