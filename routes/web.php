@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\FeedBackController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\UserAuthMiddelware;
@@ -117,3 +118,15 @@ Route::get('api/bookings/payment', [BookingController::class, 'getBookingsByPaym
 
 Route::put('api/bookings/updatePayment/{bookingId}', [BookingController::class, 'updatePaymentStatus']);
     //->middleware(UserAuthMiddelware::class); //update booking payment status to paid
+
+
+//feedback routes
+
+Route::get('api/feedbacks', [FeedBackController::class, 'getAllFeedbacks']);
+    //->middleware(UserAuthMiddelware::class); //get all feedback
+
+Route::post('api/feedback', [FeedBackController::class, 'postFeedback']);
+    //->middleware(UserAuthMiddelware::class); //add feedback
+
+Route::delete('api/feedback/{id}', [FeedBackController::class, 'deleteFeedback']);
+    //->middleware(UserAuthMiddelware::class); //delete feedback by id
