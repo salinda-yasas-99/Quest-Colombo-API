@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SendEmail;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Cache;
 
 class AuthController extends Controller
 {
@@ -69,6 +72,79 @@ class AuthController extends Controller
             'token' => $token,  // Return the token
         ]);
     }
+
+
+    public function sendEmail(Request $request)
+    {
+        try {
+            // Validate request data
+            $request->validate([
+                'to' => 'required|email',
+                'subject' => 'required|string',
+                'message' => 'required|string',
+            ]);
+
+            // Send the email
+            Mail::to($request->to)->send(new SendEmail($request->subject, $request->message));
+
+            // Return a success response
+            return response()->json(['message' => 'Email sent successfully'], 200);
+        } catch (\Exception $e) {
+            // Catch any errors and return a failure response
+            return response()->json([
+                'error' => 'An error occurred while sending the email',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+      // Method to send OTP for password reset
+      public function sendOtp(Request $request)
+      {
+          try {
+            
+              $request->validate([
+                  'email' => 'required|email|exists:user,email',
+              ]);
+  
+              $otp = rand(100000, 999999);
+  
+              Cache::put('otp_' . $request->email, $otp, now()->addMinutes(3));
+
+              Mail::to($request->email)->send(new sendEmail('Password Reset OTP', "Your OTP is $otp. It expires in 3 minutes."));
+  
+             
+              return response()->json(['message' => 'OTP sent successfully'], 200);
+  
+          } catch (\Exception $e) {
+              return response()->json(['error' => 'Failed to send OTP', 'message' => $e->getMessage()], 500);
+          }
+      }
+  
+      public function resetPassword(Request $request)
+    {
+        try {
+        
+            $cachedOtp = Cache::get('otp_' . $request->email);
+            if (!$cachedOtp || $cachedOtp != $request->otp) {
+                return response()->json(['error' => 'Invalid or expired OTP'], 400);
+            }
+
+            $user = User::where('email', $request->email)->first();
+            
+            $user->password = $request->new_password; 
+
+            $user->save();
+
+            Cache::forget('otp_' . $request->email);
+
+            return response()->json(['message' => 'Password reset successfully'], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to reset password', 'message' => $e->getMessage()], 500);
+        }
+    }
+
 
 
 }
