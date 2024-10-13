@@ -88,6 +88,9 @@ Route::get('api/workSpaces', [WorkSpaceController::class, 'getAllWorkSpacesByTyp
 Route::get('api/workSpacesByDate', [WorkSpaceController::class, 'getWorkspacesByTypeAndDate']);
     //->middleware(UserAuthMiddelware::class); // Get all workspaces
 
+Route::get('api/workSpacesByDateIdType', [WorkSpaceController::class, 'getWorkspacesbyDateTypeId']);
+    //->middleware(UserAuthMiddelware::class); // Get all workspaces
+
 
 Route::post('api/workSpaces', [WorkSpaceController::class, 'AddNewWorkSpace']);
     //->middleware(UserAuthMiddelware::class); //add new workspace type
