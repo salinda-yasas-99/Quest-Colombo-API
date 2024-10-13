@@ -6,17 +6,31 @@ use App\Models\Booking;
 use App\Models\WorkSpaceSlot;
 use Exception;
 use Illuminate\Http\Request;
+use Stripe\Charge;
+use Stripe\Stripe;
 
 class BookingController extends Controller
 {
     public function createBooking(Request $request)
     {
         try {
+
+            Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
+
             // Retrieve the userId from query parameter
             $userId = $request->query('userId');
             if (!$userId) {
                 return response()->json(['error' => 'User ID is required'], 400);
             }
+
+              // Create Stripe charge
+              $charge = Charge::create([
+                'amount' =>$request->totalCharges * 100, // Amount in cents
+                'currency' => 'LKR',
+                'description' => 'Workspace Booking',
+                'source' => $request->stripeToken,
+                'metadata' => ['user_id' => $userId],
+            ]);
     
             // Check if the workspace slot exists for the booked date and workspace ID
             $workspaceSlot = WorkSpaceSlot::where('date', $request->bookedDate)
@@ -41,6 +55,8 @@ class BookingController extends Controller
                     'slot_3'       => $request->bookedSlot == 'slot_3' ? 'booked' : 'available',
                 ]);
             }
+
+           
     
             // Create the booking record
             $booking = Booking::create([
@@ -55,6 +71,8 @@ class BookingController extends Controller
                 'user_id'        => $userId,
                 'workspace_id'   => $request->workspace_id,
                 'package_id'     => $request->package_id,
+                'stripeChargeId' => $charge->id
+
             ]);
     
             // Return a success response with the booking data
