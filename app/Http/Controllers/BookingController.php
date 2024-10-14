@@ -95,9 +95,9 @@ class BookingController extends Controller
             $bookings = Booking::with(['user', 'workspace', 'package'])->where('user_id', $userId)->get();
 
             // Check if bookings exist
-            if ($bookings->isEmpty()) {
-                return response()->json(['message' => 'No bookings found for the given user ID'], 404);
-            }
+            // if ($bookings->isEmpty()) {
+            //     return response()->json(['message' => 'No bookings found for the given user ID'], 404);
+            // }
 
             // Return the list of bookings with related details
             return response()->json($bookings, 200);
@@ -128,9 +128,9 @@ class BookingController extends Controller
                 ->get();
     
             // Check if bookings exist for the given payment status
-            if ($bookings->isEmpty()) {
-                return response()->json(['message' => "No bookings found with payment status: $paymentStatus"], 404);
-            }
+            // if ($bookings->isEmpty()) {
+            //     return response()->json(['message' => "No bookings found with payment status: $paymentStatus"], 404);
+            // }
     
             // Return the list of bookings with related details
             return response()->json($bookings, 200);
