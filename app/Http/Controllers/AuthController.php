@@ -103,9 +103,9 @@ class AuthController extends Controller
       {
           try {
             
-              $request->validate([
-                  'email' => 'required|email|exists:user,email',
-              ]);
+            //   $request->validate([
+            //       'email' => 'required|email|exists:user,email',
+            //   ]);
   
               $otp = rand(100000, 999999);
   

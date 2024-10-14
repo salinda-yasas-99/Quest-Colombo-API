@@ -7,15 +7,24 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function getUsers(Request $request){
-         // Get the 'role' query parameter
-    $role = $request->query('role');
+    public function getUsers(Request $request)
+    {
+        // Get the 'role' query parameter, default to 'all' if not provided
+        $role = $request->query('role', 'all');
 
-    $users = User::where('role', $role)->get();
-    
-    // Return the users as a JSON response
-    return response()->json($users);
+        // Fetch users based on the role
+        if ($role === 'all') {
+            // If role is 'all', get all users
+            $users = User::all();
+        } else {
+            // Otherwise, filter users by the specified role
+            $users = User::where('role', $role)->get();
+        }
+        
+        // Return the users as a JSON response
+        return response()->json($users);
     }
+
 
     public function getUserById($id)
     {

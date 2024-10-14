@@ -25,7 +25,8 @@ class Booking extends Model
         'endTime',
         'user_id',
         'workspace_id',
-        'package_id'
+        'package_id',
+        'stripeChargeId'
 
     ];
 

@@ -57,32 +57,107 @@ class WorkSpaceController extends Controller
     }
 
     public function getWorkspacesByTypeAndDate(Request $request): JsonResponse
-{
-    try {
-        // Retrieve query parameters for workspace type and date
-        $workspaceTypeName = $request->query('workspace_type');
-        $date = $request->query('date'); // Assuming the date is in yyyy-mm-dd format
+    {
+        try {
+            // Retrieve query parameters for workspace type and date
+            $workspaceTypeName = $request->query('workspace_type');
+            $date = $request->query('date'); // Assuming the date is in yyyy-mm-dd format
 
 
-        // Get workspace type ID based on the name
-        $workspaceType = WorkspaceType::where('type_name', $workspaceTypeName)->first();
+            // Get workspace type ID based on the name
+            $workspaceType = WorkspaceType::where('type_name', $workspaceTypeName)->first();
 
-        if (!$workspaceType) {
+            if (!$workspaceType) {
+                return response()->json([
+                    'error' => 'Invalid workspace_type provided'
+                ], 404);
+            }
+
+            // Retrieve workspaces of the given type and slots based on the date
+            $workspaces = WorkSpace::with(['workspaceType', 'workspaceSlots' => function ($query) use ($date) {
+                $query->where('date', $date);
+            }])
+            ->where('workspace_type_id', $workspaceType->id)
+            ->get();
+
+            // Format the response
+            $formattedWorkspaces = $workspaces->map(function ($workspace) {
+                return [
+                    'id' => $workspace->id,
+                    'name' => $workspace->name,
+                    'description' => $workspace->description,
+                    'location' => $workspace->location,
+                    'fee' => $workspace->fee,
+                    'imageUrl' => $workspace->imageUrl,
+                    'workspace_type_id' => $workspace->workspace_type_id,
+                    'workspace_type' => [
+                        'id' => $workspace->workspaceType->id,
+                        'type_name' => $workspace->workspaceType->type_name,
+                    ],
+                    // Assuming that workspace has one slot on a specific date
+                    'slot_1' => $workspace->workspaceSlots->isNotEmpty() ? $workspace->workspaceSlots->first()->slot_1 : 'available',
+                    'slot_2' => $workspace->workspaceSlots->isNotEmpty() ? $workspace->workspaceSlots->first()->slot_2 : 'available',
+                    'slot_3' => $workspace->workspaceSlots->isNotEmpty() ? $workspace->workspaceSlots->first()->slot_3 : 'available',
+                ];
+            });
+
+            // Return the formatted response
+            return response()->json($formattedWorkspaces, 200);
+
+        } catch (Exception $e) {
+            // If something goes wrong, return an error message with a 500 status code
             return response()->json([
-                'error' => 'Invalid workspace_type provided'
-            ], 404);
+                'error' => 'Failed to retrieve workspaces',
+                'message' => $e->getMessage()
+            ], 500);
         }
+    }
 
-        // Retrieve workspaces of the given type and slots based on the date
-        $workspaces = WorkSpace::with(['workspaceType', 'workspaceSlots' => function ($query) use ($date) {
-            $query->where('date', $date);
-        }])
-        ->where('workspace_type_id', $workspaceType->id)
-        ->get();
-
-        // Format the response
-        $formattedWorkspaces = $workspaces->map(function ($workspace) {
-            return [
+    public function getWorkspacesbyDateTypeId(Request $request)
+    {
+        try {
+            // Retrieve query parameters for workspace type, date, and workspace ID
+            $workspaceTypeName = $request->query('workspace_type');
+            $date = $request->query('date'); // Assuming the date is in yyyy-mm-dd format
+            $workspaceId = $request->query('workspace_id'); // New query parameter for workspace ID
+    
+            // Get workspace type ID based on the name
+            $workspaceType = WorkspaceType::where('type_name', $workspaceTypeName)->first();
+    
+            if (!$workspaceType) {
+                return response()->json([
+                    'error' => 'Invalid workspace_type provided'
+                ], 404);
+            }
+    
+            // Retrieve workspaces of the given type and slots based on the date
+            $query = WorkSpace::with(['workspaceType', 'workspaceSlots' => function ($query) use ($date) {
+                $query->where('date', $date);
+            }])
+            ->where('workspace_type_id', $workspaceType->id);
+    
+            // If workspace_id is provided, get the specific workspace
+            if ($workspaceId) {
+                $workspace = $query->find($workspaceId);
+    
+                if (!$workspace) {
+                    return response()->json([
+                        'error' => 'Workspace not found'
+                    ], 404);
+                }
+            } else {
+                // If no workspace_id is provided, get the first matching workspace
+                $workspace = $query->first();
+    
+                if (!$workspace) {
+                    return response()->json([
+                        'error' => 'No workspace available for the specified criteria'
+                    ], 404);
+                }
+            }
+    
+            // Format the response for a single workspace
+            $formattedWorkspace = [
                 'id' => $workspace->id,
                 'name' => $workspace->name,
                 'description' => $workspace->description,
@@ -99,20 +174,19 @@ class WorkSpaceController extends Controller
                 'slot_2' => $workspace->workspaceSlots->isNotEmpty() ? $workspace->workspaceSlots->first()->slot_2 : 'available',
                 'slot_3' => $workspace->workspaceSlots->isNotEmpty() ? $workspace->workspaceSlots->first()->slot_3 : 'available',
             ];
-        });
-
-        // Return the formatted response
-        return response()->json($formattedWorkspaces, 200);
-
-    } catch (Exception $e) {
-        // If something goes wrong, return an error message with a 500 status code
-        return response()->json([
-            'error' => 'Failed to retrieve workspaces',
-            'message' => $e->getMessage()
-        ], 500);
+    
+            // Return the formatted response for a single workspace
+            return response()->json($formattedWorkspace, 200);
+    
+        } catch (Exception $e) {
+            // If something goes wrong, return an error message with a 500 status code
+            return response()->json([
+                'error' => 'Failed to retrieve workspaces',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
-}
-
+    
  
      // POST: Create a new workspace
      public function AddNewWorkSpace(Request $request): JsonResponse
