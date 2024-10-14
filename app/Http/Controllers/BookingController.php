@@ -87,6 +87,29 @@ class BookingController extends Controller
         }
     }
 
+    public function getAllBookings()
+    {
+        try {
+            // Retrieve bookings by user ID and eager load related models
+            $bookings = Booking::with(['user', 'workspace', 'package'])->get();
+
+            // Check if bookings exist
+            // if ($bookings->isEmpty()) {
+            //     return response()->json(['message' => 'No bookings found for the given user ID'], 404);
+            // }
+
+            // Return the list of bookings with related details
+            return response()->json($bookings, 200);
+
+        } catch (\Exception $e) {
+            // Catch any errors and return a 500 error response with the exception message
+            return response()->json([
+                'error' => 'An error occurred while retrieving bookings',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
      // Method to get bookings by user ID
      public function getBookingsByUserId($userId)
     {
