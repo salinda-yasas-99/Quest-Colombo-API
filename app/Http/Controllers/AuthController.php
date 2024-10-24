@@ -32,6 +32,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => $request->password,  // Password will be encrypted automatically
             'role' => $request->role,
+            'status' =>"active"
         ]);
 
         // Generate JWT token for the registered user

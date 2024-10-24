@@ -19,6 +19,7 @@ class feedBack extends Model
         'email',
         'subject',
         'message',
+        'status'
 
     ];
 

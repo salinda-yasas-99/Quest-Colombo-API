@@ -34,6 +34,10 @@ Route::post('api/reset-password', [AuthController::class, 'resetPassword']);
 Route::get('api/user', [UserController::class, 'getUsers'])
     -> middleware(UserAuthMiddelware::class); // Apply the custom middleware
 
+// get all users
+Route::get('api/users/byStatus', [UserController::class, 'getUsersByStatus'])
+    -> middleware(UserAuthMiddelware::class); 
+
 // Get a single user by ID
 Route::get('api/user/{id}', [UserController::class, 'getUserById'])
     ->middleware(UserAuthMiddelware::class);
@@ -64,11 +68,14 @@ Route::delete('api/packages/{id}', [PackageController::class, 'destroy'])
 //work space Types routes
 
 Route::get('api/workSpaceTypes', [WorkSpaceTypeController::class, 'getAllWorkspaceTypes'])
-    ->middleware(UserAuthMiddelware::class); // Get all Types
+    ->middleware(UserAuthMiddelware::class); //Get all Types
 
 
 Route::post('api/workSpaceTypes', [WorkSpaceTypeController::class, 'createWorkspaceType'])
     ->middleware(AuthMiddleware::class); //add workspace
+
+Route::put('api/workSpaceTypes/edit/{id}', [WorkSpaceTypeController::class, 'updateWorkSpace'])
+    ->middleware(AuthMiddleware::class); //update workspace
 
 
 Route::delete('api/workSpaceTypes/{id}', [WorkSpaceTypeController::class, 'deleteTypeById'])

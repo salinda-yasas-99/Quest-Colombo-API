@@ -33,6 +33,7 @@ class FeedBackController extends Controller
                 'email' => $request->email,
                 'subject' => $request->subject,
                 'message' => $request->message,
+                'status' => "unread"
             ]);
 
             return response()->json([
@@ -48,22 +49,23 @@ class FeedBackController extends Controller
         }
     }
 
-    /**
-     * Delete feedback by ID.
-     */
     public function deleteFeedback($id)
     {
         try {
             $feedback = feedBack::findOrFail($id);
-            $feedback->delete();
+            //$feedback->delete();
+
+            $feedback->status = "read";
+
+            $feedback->save();
 
             return response()->json([
-                'message' => 'Feedback deleted successfully'
+                'message' => 'Feedback status updated successfully'
             ], 200);
 
         } catch (Exception $e) {
             return response()->json([
-                'error' => 'Failed to delete feedback',
+                'error' => 'Failed to update feedback',
                 'message' => $e->getMessage()
             ], 500);
         }

@@ -193,7 +193,6 @@ class WorkSpaceController extends Controller
      {
          try {
              
- 
              // Create a new workspace
              $workspace = WorkSpace::create([
                  'name' => $request->name,
@@ -223,6 +222,47 @@ class WorkSpaceController extends Controller
              ], 500);
          }
      }
+
+     public function updateWorkSpace(Request $request, $id): JsonResponse
+    {
+        try {
+            // Find the workspace by ID
+            $workspace = WorkSpace::find($id);
+
+            // Check if the workspace exists
+            if (!$workspace) {
+                return response()->json(['error' => 'Workspace not found'], 404);
+            }
+
+            // Update the workspace fields
+            $workspace->update([
+                'name' => $request->name,
+                'description' => $request->description,
+                'location' => $request->location,
+                'fee' => $request->fee,
+                'imageUrl' => $request->imageUrl,
+                'workspace_type_id' => $request->workspace_type_id,
+            ]);
+
+            // Return the updated workspace and success message
+            return response()->json([
+                'message' => 'Workspace successfully updated',
+                'workspace' => $workspace,
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Handle validation errors
+            return response()->json([
+                'error' => 'Validation error',
+                'message' => $e->errors(),
+            ], 422);
+        } catch (Exception $e) {
+            // Catch any other exceptions and return a 500 error
+            return response()->json([
+                'error' => 'Failed to update workspace',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 
        //delete work space by id
        public function deleteWorkSpaceById($id)
