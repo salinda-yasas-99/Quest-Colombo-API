@@ -32,7 +32,9 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => $request->password,  // Password will be encrypted automatically
             'role' => $request->role,
-            'status' =>"active"
+            'status' =>"active",
+            'points'=>0,
+            'tiar'=>"platinum"
         ]);
 
         // Generate JWT token for the registered user
@@ -41,7 +43,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'User successfully registered',
             'user' => $user,
-            'token' => $token,  // Return the token
+            'token' => $token,  
         ]);
     }
 
@@ -63,6 +65,11 @@ class AuthController extends Controller
 
         // Get the authenticated user
         $user = Auth::user();
+
+         // Check if the user's status is deactivated
+        if ($user->status !== 'active') {
+                return response()->json(['message' => 'Your account is deactivated. Please contact support.'], 403);
+        }
 
          // Generate JWT token for the registered user
          $token = JWTAuth::fromUser($user);

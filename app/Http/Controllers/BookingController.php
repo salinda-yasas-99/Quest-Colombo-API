@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\User;
 use App\Models\WorkSpaceSlot;
 use Exception;
 use Illuminate\Http\Request;
@@ -74,6 +75,28 @@ class BookingController extends Controller
                 'stripeChargeId' => $charge->id
 
             ]);
+
+            $user = User::find($userId);
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+
+            $user->points += 100;
+            $user->save();
+            $tier_Details = $request->tier; 
+
+            // Check if tier is present in the request
+            if ($tier_Details == null) {
+                return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);
+            }
+            elseif($tier_Details == 'silver'){
+                $user->points -= 3000; 
+                $user->save();
+            }
+            elseif($tier_Details == 'gold'){
+                $user->points -= 5000; 
+                $user->save();
+            }
     
             // Return a success response with the booking data
             return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);

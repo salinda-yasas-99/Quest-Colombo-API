@@ -28,7 +28,9 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'role',
-        'status'
+        'status',
+        'points',
+        'tier'
     ];
 
     // Automatically encrypt the password when it's set
