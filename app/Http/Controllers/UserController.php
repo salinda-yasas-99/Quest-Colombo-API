@@ -25,6 +25,24 @@ class UserController extends Controller
         return response()->json($users);
     }
 
+    public function getUsersByStatus(Request $request)
+    {
+        // Get the 'role' query parameter, default to 'all' if not provided
+        $status = $request->query('status', 'active');
+
+        // Fetch users based on the role
+        if ($status === 'active') {
+            // If role is 'all', get all users
+            $users = User::where('status', $status)->get();
+        } else {
+            // Otherwise, filter users by the specified role
+            $users = User::where('role', $status)->get();
+        }
+        
+        // Return the users as a JSON response
+        return response()->json($users);
+    }
+
 
     public function getUserById($id)
     {
@@ -46,20 +64,14 @@ class UserController extends Controller
         // Find the user by ID
         $user = User::find($id);
 
-        // Check if the user exists
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
-        }
+        // Update the status to 'deactivated'
+        $user->status = 'deactivated';
 
-        // Delete the user
-        $user->delete();
+        // Save the updated user status
+        $user->save();
 
         // Return success message
-        return response()->json(['message' => 'User deleted successfully']);
+        return response()->json(['message' => 'User deactivated successfully']);
     }
-
-
-
-
 
 }
