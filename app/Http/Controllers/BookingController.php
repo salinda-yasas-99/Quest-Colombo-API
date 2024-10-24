@@ -94,7 +94,7 @@ class BookingController extends Controller
                 $user->save();
             }
             elseif($tier_Details == 'gold'){
-                $user->points -= 5000; 
+                $user->points -= 4000; 
                 $user->save();
             }
     
